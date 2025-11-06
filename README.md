@@ -28,9 +28,7 @@ Together, these components form a reproducible framework for EEG motor imagery a
 
 ---
 
-## Workflow Summary
-
-### 1. Data Acquisition & Preprocessing (Matlab)
+## 1. Data Acquisition & Preprocessing (Matlab)
 
 All low-level signal processing steps are executed in Matlab scripts (`preprocessing/` folder).
 
@@ -52,7 +50,7 @@ All low-level signal processing steps are executed in Matlab scripts (`preproces
 
 ---
 
-### 2. Classification - Linear Models (Python)
+## 2. Classification - Linear Models (Python)
 
 Notebook: `EEG_Linear_model.ipynb`
 
@@ -72,7 +70,7 @@ Notebook: `EEG_Linear_model.ipynb`
 - Confusion matrix and ROC curve  
 
 
-### 3. Classification - Deep Learning Models (Python)
+## 3. Classification - Deep Learning Models (Python)
 
 Notebook: `EEG_Deep_learning.ipynb` (under development)
 
@@ -108,7 +106,7 @@ Dense(2, activation='softmax')
 
 ---
 
-### 4. Evaluation
+## 4. Evaluation
 
 - Confusion Matrix  
 - ROC–AUC Score  
@@ -117,7 +115,7 @@ Dense(2, activation='softmax')
 
 ---
 
-## 📊 Results 
+## 📊 5. Results 
 
 | Model | Input | Accuracy | AUC | Notes |
 |-------|--------|----------|-----|-------|
