@@ -1,0 +1,39 @@
+# ===========================
+# Global ignore
+# ===========================
+__pycache__/
+*.pyc
+*.pyo
+*.log
+*.DS_Store
+*.ipynb_checkpoints/
+.vscode/
+.env/
+.venv/
+*.mat
+*.csv
+*.h5
+*.keras
+*.zip
+*.tar
+*.gz
+
+# ===========================
+# Ignore all data
+# ===========================
+data/*
+!data/.gitkeep
+
+# ===========================
+# Ignore deep learning notebook
+# ===========================
+notebooks/eeg_classification_deep_learning.ipynb
+
+# ===========================
+# Track only selected notebooks and source files
+# ===========================
+!README.md
+!notebooks/eeg_classification_linear_models.ipynb
+!src/
+!matlab/
+!matlab/data_processing.m
