@@ -3,16 +3,28 @@
 
 ---
 
+## 🎯 Project Goal
+
+The goal of this project is to **classify EEG signals recorded during motor imagery tasks**—that is, when a subject imagines moving a limb (e.g., left or right hand).  
+By decoding these imagined movements from brain activity, we aim to support the development of **brain–computer interfaces (BCIs)** for motor rehabilitation, prosthetic control, and neurofeedback systems.
+
+Specifically, this project:
+- Uses **EEG recordings** from a motor imagery experiment inspired by  
+  *Leeb et al.*, “Brain–Computer Communication: Motivation, Aim, and Impact of Exploring a Virtual Apartment,”  
+  *IEEE Trans. Neural Systems and Rehabilitation Engineering, 2007*.
+- Implements a **complete processing pipeline**, from raw signal cleaning to feature extraction and classification.
+- Compares **traditional linear models** (LDA, Logistic Regression) with a **deep learning approach** (ConvLSTM) for temporal–spatial EEG sequence learning.
+
+---
+
 ## Overview
 
-This repository contains the complete workflow for **EEG motor imagery classification** based on the study setup described in:
+This repository integrates:
+- **Signal preprocessing in Matlab**, to clean, segment, and prepare EEG trials.
+- **Feature-based classification in Python**, using LDA and Logistic Regression for interpretable baselines.
+- **Sequence-based deep learning in Python**, using ConvLSTM to capture spatiotemporal dependencies in raw EEG signals.
 
-> *Leeb et al.,* “Brain–Computer Communication: Motivation, Aim, and Impact of Exploring a Virtual Apartment,” **IEEE Trans. Neural Systems and Rehabilitation Engineering**, 2007.
-
-The project integrates:
-- **Signal preprocessing in Matlab**, to clean and segment the EEG data.
-- **Feature-based linear classification** in Python (LDA, Logistic Regression).
-- **Sequence-based deep learning classification** in Python using **ConvLSTM** models.
+Together, these components form a reproducible framework for EEG motor imagery analysis—from signal-level processing to model evaluation.
 
 ---
 
