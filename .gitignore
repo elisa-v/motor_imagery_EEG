@@ -24,6 +24,8 @@ __pycache__/
 data/raw/*
 !data/test_set.mat
 !data/training_set.mat
+!data/feature_training_set.csv
+!data/feature_test_set.csv
 !data/.gitkeep
 
 # ===========================
