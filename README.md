@@ -22,26 +22,27 @@ This project uses **EEG recordings** from a motor imagery experiment inspired by
 
 ## Repository Overview
 
-MOTOR_IMAGERY_EEG
-├── data/                     # Processed and raw datasets (.mat, .csv)
+MOTOR_IMAGERY_EEG/
+├── data/                          # Processed and raw datasets (.mat, .csv)
 │   ├── training_set.mat
 │   ├── test_set.mat
 │   ├── feature_training_set.csv
 │   └── feature_test_set.csv
 │
-├── notebooks/
-│   ├── linear_model_notebook.ipynb     # LDA and Logistic Regression models
-│   └── deep_learning_notebook.ipynb    # ConvLSTM-based sequence model
+├── notebooks/                     # Main Jupyter notebooks
+│   ├── linear_model_notebook.ipynb    # LDA and Logistic Regression
+│   └── deep_learning_notebook.ipynb   # ConvLSTM-based sequence model
 │
-├── src/                      # Python package with reusable modules
+├── src/                           # Python package with reusable modules
 │   ├── data_processing.py
 │   ├── data_visualisation.py
 │   ├── deep_learning.py
 │   ├── model_selection.py
 │   └── utils.py
 │
-├── models/                   # Saved trained models (.h5, .npy)
-├── results/                  # Evaluation outputs (plots, reports)
+├── models/                        # Saved trained models (.h5, .npy)
+│
+├── results/                       # Evaluation outputs (plots, reports)
 │   ├── LDA_confusion_matrix.png
 │   ├── LDA_roc_curve.png
 │   ├── LDA_classification_report.txt
@@ -49,9 +50,15 @@ MOTOR_IMAGERY_EEG
 │   ├── ConvLSTM_roc_curve.png
 │   └── ConvLSTM_classification_report.txt
 │
-├── documentation/            # Project and reference notes
-├── matlab/                   # Preprocessing scripts
+├── matlab/                        # Preprocessing scripts (artifact removal, filtering)
+│
+├── documentation/                 # Project notes and references
+│
+├── LICENSE
+├── pyproject.toml
+├── poetry.lock
 └── README.md
+
 
 
 ---
@@ -168,7 +175,7 @@ The model was evaluated on the 1s sequences and on the 3s moro imagery sequence 
 
 ---
 
-## Author & License
+## Author 
 
 Developed by Elisa Vasta
 
