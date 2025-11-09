@@ -3,6 +3,7 @@
 
 ---
 
+
 ## 🎯 Project Goal
 
 The goal of this project is to **classify EEG signals recorded during motor imagery tasks**, i.e. when a subject imagines moving a limb (left or right hand).
@@ -20,8 +21,9 @@ This project uses **EEG recordings** from a motor imagery experiment inspired by
 
 ---
 
-## Repository Overview
 
+## Repository Overview
+```bash
 MOTOR_IMAGERY_EEG/
 ├── data/                          # Processed and raw datasets (.mat, .csv)
 │   ├── training_set.mat
@@ -58,10 +60,10 @@ MOTOR_IMAGERY_EEG/
 ├── pyproject.toml
 ├── poetry.lock
 └── README.md
-
-
+```
 
 ---
+
 
 ## 1. Data Acquisition & Preprocessing (Matlab)
 
@@ -82,8 +84,8 @@ All low-level signal processing steps are executed in Matlab scripts (`preproces
    training_set.label = [N × 1];
    ```
 
-
 ---
+
 
 ## 2. Classification - Linear Models (Python)
 
@@ -105,6 +107,7 @@ Notebook: `notebooks/linear_model_notebook.ipynb`
 | **Linear Discriminant Analysis (LDA)** | **0.87** | **0.94** | **0.87** |
 | **Logistic Regression**                |   0.85   |   0.93   |   0.86   |
 
+---
 
 
 ## 3. Classification - Deep Learning Models (Python)
@@ -150,6 +153,7 @@ The model was evaluated on the 1s sequences and on the 3s moro imagery sequence 
 
 ---
 
+
 ## 4. Results  Summary
 
 | Model               | Input               | Accuracy | AUC      | F1 (macro) | Notes                                  |
@@ -161,6 +165,7 @@ The model was evaluated on the 1s sequences and on the 3s moro imagery sequence 
 
 ---
 
+
 ## 5. Key Insights
 
 - Linear models (LDA, LR) achieve strong baseline accuracy on EEG-band-based features.
@@ -168,12 +173,14 @@ The model was evaluated on the 1s sequences and on the 3s moro imagery sequence 
 
 ---
 
+
 ## 6. Next Steps
 
 - Integrate cross-subject validation
 - Explore frequency–temporal attention models
 
 ---
+
 
 ## Author 
 
