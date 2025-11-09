@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import collections
 from pathlib import Path
 from typing import Sequence, Tuple, List
 
@@ -98,3 +99,56 @@ def sequ_feature_selection(
     feat_names = list(X_prefiltered.columns[feat_idx])
     
     return X_prefiltered[feat_names], feat_names
+
+
+def augment_eeg_sequences(
+    x: np.ndarray,
+    y: np.ndarray,
+    n_channels: int = 3,
+    total_length: int = 750,  # corresponds to 3 s (750 / fs = 3 s)
+    factor: int = 3) -> Tuple[np.ndarray, np.ndarray]:
+    
+    crop_length = total_length // factor
+
+    # reshape to (n_trials, factor, crop_length, n_channels)
+    x_reshaped = x.reshape((x.shape[0], factor, crop_length, n_channels))
+
+    # stack along trial axis -> (n_trials * factor, crop_length, n_channels)
+    x_aug = x_reshaped.reshape((-1, crop_length, n_channels))
+
+    # repeat labels for each crop
+    y_aug = np.zeros(shape=(x_aug.shape[0],), dtype=y.dtype)
+    for i in range(y.shape[0]):
+        y_aug[i * factor : i * factor + factor].fill(y[i])
+
+    print("Augmented data:")
+    print("  x_aug shape:", x_aug.shape)
+    print("  y_aug shape:", y_aug.shape)
+
+    # sanity check: class balance
+    print("Label distribution:", collections.Counter(y_aug))
+
+    return x_aug, y_aug
+
+
+def to_video_windows(
+    x_aug: np.ndarray,
+    n_frames: int,
+    frame_length: int,
+    n_channels: int = 3) -> np.ndarray:
+    
+    x_vid = x_aug.copy()
+
+    # total_length should equal n_frames * frame_length
+    total_length = x_vid.shape[1]
+    assert (
+        total_length == n_frames * frame_length
+    ), f"Expected total_length={n_frames*frame_length}, got {total_length}"
+
+    x_vid.resize((x_aug.shape[0], n_frames, frame_length, n_channels))
+
+    print("Video-like representation:")
+    print("  x_aug shape:", x_aug.shape)
+    print("  x_vid shape:", x_vid.shape)
+
+    return x_vid

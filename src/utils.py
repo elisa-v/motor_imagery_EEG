@@ -1,6 +1,8 @@
 from pathlib import Path
 from typing import Tuple
+import numpy as np
 import pandas as pd
+import scipy
 
 
 def load_feature_datasets(
@@ -22,3 +24,24 @@ def load_feature_datasets(
     X_test = df_test.drop(columns=[label_col])
 
     return X_train, X_test, y_train, y_test
+
+
+def load_eeg_mat_dataset(mat_path: str | Path,
+    struct_name: str = "training_set") -> Tuple[np.ndarray, np.ndarray]:
+    mat_file = scipy.io.loadmat(mat_path)
+    struct_data = mat_file[struct_name] 
+
+    eeg_field = struct_data["eeg_sequences"]   # cell array / struct field
+    label_field = struct_data["label"]
+
+    sequences = [eeg_field[0][i] for i in range(len(eeg_field[0]))]
+    labels = [label_field[0][0][i][0] for i in range(len(label_field[0][0]))]
+
+    x = np.array(sequences)
+    y = np.array(labels, dtype="uint8")
+
+    print(f"Loaded {struct_name} from {mat_path}")
+    print("  x shape:", x.shape)
+    print("  y shape:", y.shape)
+
+    return x, y
