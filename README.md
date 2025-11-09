@@ -24,7 +24,7 @@ This repository integrates:
 - **Feature-based classification in Python**, using LDA and Logistic Regression for interpretable baselines.
 - **Sequence-based deep learning in Python**, using ConvLSTM to capture spatiotemporal dependencies in raw EEG signals.
 
-Together, these components form a reproducible framework for EEG motor imagery analysis—from signal-level processing to model evaluation.
+Together, these components form a reproducible framework for EEG motor imagery analysis, from signal-level processing to model evaluation.
 
 ---
 
