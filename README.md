@@ -5,8 +5,8 @@
 
 ## 🎯 Project Goal
 
-The goal of this project is to **classify EEG signals recorded during motor imagery tasks**—that is, when a subject imagines moving a limb (e.g., left or right hand).  
-By decoding these imagined movements from brain activity, we aim to support the development of **brain–computer interfaces (BCIs)** for motor rehabilitation, prosthetic control, and neurofeedback systems.
+The goal of this project is to **classify EEG signals recorded during motor imagery tasks** -that is, when a subject imagines moving a limb (e.g., left or right hand).  
+By decoding these imagined movements from brain activity, we aim to support the development of **brain-computer interfaces (BCIs)** for motor rehabilitation, prosthetic control, and neurofeedback systems.
 
 Specifically, this project:
 - Uses **EEG recordings** from a motor imagery experiment inspired by  
@@ -33,12 +33,12 @@ Together, these components form a reproducible framework for EEG motor imagery a
 All low-level signal processing steps are executed in Matlab scripts (`preprocessing/` folder).
 
 **Main steps:**
-1. **Artifact removal** – regress out EOG channels using linear regression.
+1. **Artifact removal** - regress out EOG channels using linear regression.
 2. **Band-pass filtering (2–60 Hz)** – to isolate EEG frequency bands.
-3. **Trial alignment** – correct the starting points of trials based on event markers.
+3. **Trial alignment** - correct the starting points of trials based on event markers.
 4. **Artifact rejection** – remove epochs exceeding amplitude thresholds.
-5. **Segmentation** – extract 3 s motor imagery periods from each trial.
-6. **Export to `.mat` format** – each dataset saved as:
+5. **Segmentation** - extract 3 s motor imagery periods from each trial.
+6. **Export to `.mat` format** - each dataset saved as:
    - `training_set.mat`
    - `test_set.mat`
    containing fields:
@@ -99,17 +99,13 @@ Dense(2, activation='softmax')
 
 - **Optimizer:** `Adam (learning rate = 1e-3)`  
 - **Loss:** `SparseCategoricalCrossentropy`  
-- **Callbacks:**
-  - `EarlyStopping`
-  - `ReduceLROnPlateau`
-  - `ModelCheckpoint`
 
 ---
 
 ## 4. Evaluation
 
 - Confusion Matrix  
-- ROC–AUC Score  
+- ROC-AUC Score  
 - Accuracy on held-out test set
 
 
@@ -121,7 +117,7 @@ Dense(2, activation='softmax')
 |-------|--------|----------|-----|-------|
 | LDA | Band-power features | 0.87 | 0.94 | Fast baseline |
 | Logistic Regression | Band-power features | 0.85 | 0.93 | - |
-| ConvLSTM | Raw 3 × EEG sequences | 0.90| - | Temporal–spatial modeling |
+| ConvLSTM | Raw 3 × EEG sequences | 0.90| - | Temporal-spatial modeling |
 
 
 
