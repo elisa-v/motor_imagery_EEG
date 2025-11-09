@@ -53,10 +53,10 @@ def load_eeg_mat_dataset(mat_path: str | Path,
 def save_linear_results(
     y_true: np.ndarray,
     y_pred: np.ndarray,
-    y_pred_proba: np.ndarray | None,
     results_dir: Path,
     model_name: str,
     class_labels: Sequence[str],
+    y_pred_proba: np.ndarray | None = None,
     ) -> None:
  
     results_dir.mkdir(parents=True, exist_ok=True)

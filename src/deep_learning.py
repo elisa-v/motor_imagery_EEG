@@ -140,10 +140,11 @@ def evaluate_classifier(
 
     return y_pred, y_pred_prob
 
-def majority_vote_over_crops(
+def majority_vote_over_imagery_sequence(
     y_pred_crops: np.ndarray,
     factor: int = 3,
-) -> np.ndarray:
+    ) -> np.ndarray:
+
     y_flat = y_pred_crops.flatten()
     assert len(y_flat) % factor == 0, "Number of crops must be a multiple of factor."
 
