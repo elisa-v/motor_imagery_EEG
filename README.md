@@ -21,7 +21,7 @@ This project uses **EEG recordings** from a motor imagery experiment inspired by
 ---
 
 ## Repository Overview
-
+```bash
 MOTOR_IMAGERY_EEG/
 ├── data/                          # Processed and raw datasets (.mat, .csv)
 │   ├── training_set.mat
@@ -58,8 +58,7 @@ MOTOR_IMAGERY_EEG/
 ├── pyproject.toml
 ├── poetry.lock
 └── README.md
-
-
+```
 
 ---
 
