@@ -21,19 +21,15 @@ __pycache__/
 # ===========================
 # Ignore all data
 # ===========================
-data/*
+data/raw/*
+!data/test_set.mat
+!data/training_set.mat
 !data/.gitkeep
 
 # ===========================
 # Ignore deep learning notebook
 # ===========================
 notebooks/eeg_classification_deep_learning.ipynb
+notebooks/old_notebook_eeg.ipynb
 
-# ===========================
-# Track only selected notebooks and source files
-# ===========================
-!README.md
-!notebooks/eeg_classification_linear_models.ipynb
-!src/
-!matlab/
-!matlab/data_processing.m
+
