@@ -34,9 +34,9 @@ All low-level signal processing steps are executed in Matlab scripts (`preproces
 
 **Main steps:**
 1. **Artifact removal** - regress out EOG channels using linear regression.
-2. **Band-pass filtering (2–60 Hz)** – to isolate EEG frequency bands.
+2. **Band-pass filtering (2–60 Hz)** - to isolate EEG frequency bands.
 3. **Trial alignment** - correct the starting points of trials based on event markers.
-4. **Artifact rejection** – remove epochs exceeding amplitude thresholds.
+4. **Artifact rejection** - remove epochs exceeding amplitude thresholds.
 5. **Segmentation** - extract 3 s motor imagery periods from each trial.
 6. **Export to `.mat` format** - each dataset saved as:
    - `training_set.mat`
