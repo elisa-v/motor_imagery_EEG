@@ -3,32 +3,42 @@
 
 ---
 
-## Overview
+## 🎯 Project Goal
 
-This repository contains the complete workflow for **EEG motor imagery classification** based on the study setup described in:
+The goal of this project is to **classify EEG signals recorded during motor imagery tasks** -that is, when a subject imagines moving a limb (e.g., left or right hand).  
+By decoding these imagined movements from brain activity, we aim to support the development of **brain-computer interfaces (BCIs)** for motor rehabilitation, prosthetic control, and neurofeedback systems.
 
-> *Leeb et al.,* “Brain–Computer Communication: Motivation, Aim, and Impact of Exploring a Virtual Apartment,” **IEEE Trans. Neural Systems and Rehabilitation Engineering**, 2007.
-
-The project integrates:
-- **Signal preprocessing in Matlab**, to clean and segment the EEG data.
-- **Feature-based linear classification** in Python (LDA, Logistic Regression).
-- **Sequence-based deep learning classification** in Python using **ConvLSTM** models.
+Specifically, this project:
+- Uses **EEG recordings** from a motor imagery experiment inspired by  
+  *Leeb et al.*, “Brain-Computer Communication: Motivation, Aim, and Impact of Exploring a Virtual Apartment,”  
+  *IEEE Trans. Neural Systems and Rehabilitation Engineering, 2007*.
+- Implements a **complete processing pipeline**, from raw signal cleaning to feature extraction and classification.
+- Compares **traditional linear models** (LDA, Logistic Regression) with a **deep learning approach** (ConvLSTM) for temporal–spatial EEG sequence learning.
 
 ---
 
-## Workflow Summary
+## Overview
 
-### 1. Data Acquisition & Preprocessing (Matlab)
+This repository integrates:
+- **Signal preprocessing in Matlab**, to clean, segment, and prepare EEG trials.
+- **Feature-based classification in Python**, using LDA and Logistic Regression for interpretable baselines.
+- **Sequence-based deep learning in Python**, using ConvLSTM to capture spatiotemporal dependencies in raw EEG signals.
+
+Together, these components form a reproducible framework for EEG motor imagery analysis, from signal-level processing to model evaluation.
+
+---
+
+## 1. Data Acquisition & Preprocessing (Matlab)
 
 All low-level signal processing steps are executed in Matlab scripts (`preprocessing/` folder).
 
 **Main steps:**
-1. **Artifact removal** – regress out EOG channels using linear regression.
-2. **Band-pass filtering (2–60 Hz)** – to isolate EEG frequency bands.
-3. **Trial alignment** – correct the starting points of trials based on event markers.
-4. **Artifact rejection** – remove epochs exceeding amplitude thresholds.
-5. **Segmentation** – extract 3 s motor imagery periods from each trial.
-6. **Export to `.mat` format** – each dataset saved as:
+1. **Artifact removal** - regress out EOG channels using linear regression.
+2. **Band-pass filtering (2–60 Hz)** - to isolate EEG frequency bands.
+3. **Trial alignment** - correct the starting points of trials based on event markers.
+4. **Artifact rejection** - remove epochs exceeding amplitude thresholds.
+5. **Segmentation** - extract 3 s motor imagery periods from each trial.
+6. **Export to `.mat` format** - each dataset saved as:
    - `training_set.mat`
    - `test_set.mat`
    containing fields:
@@ -40,7 +50,7 @@ All low-level signal processing steps are executed in Matlab scripts (`preproces
 
 ---
 
-### 2. Classification - Linear Models (Python)
+## 2. Classification - Linear Models (Python)
 
 Notebook: `EEG_Linear_model.ipynb`
 
@@ -60,7 +70,7 @@ Notebook: `EEG_Linear_model.ipynb`
 - Confusion matrix and ROC curve  
 
 
-### 3. Classification - Deep Learning Models (Python)
+## 3. Classification - Deep Learning Models (Python)
 
 Notebook: `EEG_Deep_learning.ipynb` (under development)
 
@@ -89,29 +99,25 @@ Dense(2, activation='softmax')
 
 - **Optimizer:** `Adam (learning rate = 1e-3)`  
 - **Loss:** `SparseCategoricalCrossentropy`  
-- **Callbacks:**
-  - `EarlyStopping`
-  - `ReduceLROnPlateau`
-  - `ModelCheckpoint`
 
 ---
 
-### 4. Evaluation
+## 4. Evaluation
 
 - Confusion Matrix  
-- ROC–AUC Score  
+- ROC-AUC Score  
 - Accuracy on held-out test set
 
 
 ---
 
-## 📊 Results 
+## 📊 5. Results 
 
 | Model | Input | Accuracy | AUC | Notes |
 |-------|--------|----------|-----|-------|
 | LDA | Band-power features | 0.87 | 0.94 | Fast baseline |
 | Logistic Regression | Band-power features | 0.85 | 0.93 | - |
-| ConvLSTM | Raw 3 × EEG sequences | 0.90| - | Temporal–spatial modeling |
+| ConvLSTM | Raw 3 × EEG sequences | 0.90| - | Temporal-spatial modeling |
 
 
 
