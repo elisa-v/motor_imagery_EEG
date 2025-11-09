@@ -10,7 +10,7 @@ By decoding these imagined movements from brain activity, we aim to support the 
 
 Specifically, this project:
 - Uses **EEG recordings** from a motor imagery experiment inspired by  
-  *Leeb et al.*, “Brain–Computer Communication: Motivation, Aim, and Impact of Exploring a Virtual Apartment,”  
+  *Leeb et al.*, “Brain-Computer Communication: Motivation, Aim, and Impact of Exploring a Virtual Apartment,”  
   *IEEE Trans. Neural Systems and Rehabilitation Engineering, 2007*.
 - Implements a **complete processing pipeline**, from raw signal cleaning to feature extraction and classification.
 - Compares **traditional linear models** (LDA, Logistic Regression) with a **deep learning approach** (ConvLSTM) for temporal–spatial EEG sequence learning.
