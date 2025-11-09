@@ -1,31 +1,53 @@
-from sklearn.pipeline import Pipeline
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Sequence, Tuple, List
+
+import numpy as np
+import pandas as pd
+from numpy.typing import ArrayLike
+
+from sklearn.base import BaseEstimator
+from sklearn.preprocessing import StandardScaler
+
 from mlxtend.feature_selection import SequentialFeatureSelector as SFS
 
 
+def standardize_features(
+    X_train: pd.DataFrame,
+    X_test: pd.DataFrame,
+) -> Tuple[pd.DataFrame, pd.DataFrame, StandardScaler]:
+
+    scaler = StandardScaler()
+
+    X_train_scaled = pd.DataFrame(
+        scaler.fit_transform(X_train),
+        columns=X_train.columns,
+        index=X_train.index,
+    )
+
+    X_test_scaled = pd.DataFrame(
+        scaler.transform(X_test),
+        columns=X_test.columns,
+        index=X_test.index,
+    )
+
+    return X_train_scaled, X_test_scaled, scaler
+
 def sequ_feature_selection(
-    estimator,
-    n_features,
-    X,
-    y,
-    corr_based=False,
-    method="SFS",
-    corr_threshold=0.85,
-    scoring="accuracy",
-    cv=3
-):
+    estimator: BaseEstimator,
+    n_features: int,
+    X: pd.DataFrame,
+    y: ArrayLike,
+    corr_based: bool = False,
+    method: str = "SFS",
+    corr_threshold: float = 0.85,
+    scoring: str = "accuracy",
+    cv: int = 3,
+) -> Tuple[pd.DataFrame, List[str]]:
     """
     Sequential feature selection with optional correlation-based prefiltering.
     
-    Parameters
-    ----------
-    estimator : sklearn estimator
-        Model used to evaluate subsets (e.g. LDA, LogisticRegression).
-    n_features : int
-        Target number of features to select.
-    X : pd.DataFrame
-        Input feature matrix.
-    y : array-like
-        Target labels.
     corr_based : bool, optional
         If True, first remove highly correlated features 
         (|r| > corr_threshold) by keeping the less redundant one.
@@ -34,22 +56,9 @@ def sequ_feature_selection(
         - "SFS" : Sequential Forward Selection
         - "SBFS": Sequential Backward Floating Selection
         - "SFFS": Sequential Forward Floating Selection
-    corr_threshold : float
-        Absolute correlation threshold for pruning.
-    scoring : str
-        Scikit-learn scoring metric.
-    cv : int
-        Number of CV folds.
-        
-    Returns
-    -------
-    X_selected : pd.DataFrame
-        Reduced feature matrix containing only the selected features.
-    feat_names : list of str
-        Names of selected features.
     """
     
-    # ----- Optional correlation-based filtering -----
+    # Optional correlation-based filtering of features
     if corr_based:
         corr_matrix = X.corr().abs()
         mean_corr = corr_matrix.mean(axis=0)
@@ -69,7 +78,7 @@ def sequ_feature_selection(
     else:
         X_prefiltered = X.copy()
     
-    # ----- Configure SFS -----
+    # Configure SFS 
     forward = method in ("SFS", "SFFS")
     floating = method in ("SBFS", "SFFS")
     
@@ -89,32 +98,3 @@ def sequ_feature_selection(
     feat_names = list(X_prefiltered.columns[feat_idx])
     
     return X_prefiltered[feat_names], feat_names
-
-
-
-def split_into_subsequences(X, y, factor=3, samples_per_window=250):
-    """
-    Split each EEG segment [T, C] into 'factor' shorter windows.
-    Returns new arrays (X_aug, y_aug) with length N * factor.
-
-    X: [N, T, C]
-    """
-    N, T, C = X.shape
-    assert T >= factor * samples_per_window, (
-        f"Sequence length {T} < factor * samples_per_window "
-        f"({factor * samples_per_window})"
-    )
-
-    # Take only the first factor * samples_per_window samples (e.g. 3 * 250 = 750)
-    X_trimmed = X[:, : factor * samples_per_window, :]   # [N, factor*L, C]
-
-    # Reshape to [N, factor, L, C]
-    X_split = X_trimmed.reshape(N, factor, samples_per_window, C)
-
-    # Collapse factor dimension
-    X_aug = X_split.reshape(-1, samples_per_window, C)
-
-    # Repeat labels accordingly
-    y_aug = np.repeat(y, factor)
-
-    return X_aug, y_aug

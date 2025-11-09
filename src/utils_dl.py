@@ -30,6 +30,8 @@ from keras.layers import (
 )
 from keras.utils import plot_model
 
+from data_visualisation import plot_confusion_matrix, plot_roc_curve
+
 PROJECT_ROOT = Path(r"C:\Users\elisa\Documents\elisa_projects\motor_imagery_EEG")
 DATA_DIR = PROJECT_ROOT / "data"
 MODEL_DIR = PROJECT_ROOT / "models"
@@ -171,6 +173,7 @@ def train_and_save_model(
     model_prefix: str = "ConvLSTM",
     model_path: Path | str = ""
 ) -> Tuple[keras.callbacks.History, Path]:
+    
     # add last dim (channel) for ConvLSTM input if needed
     if x_train.ndim == 4:
         x_train = x_train[..., np.newaxis]
@@ -199,66 +202,7 @@ def train_and_save_model(
     print(f"Model saved to: {model_file}")
     print(f"History saved to: {history_file}")
 
-
     return history, str(model_file)
-
-
-def plot_training_curves(history: keras.callbacks.History) -> None:
-    loss = history.history.get("loss", [])
-    acc = history.history.get("accuracy", [])
-
-    epochs = range(1, len(loss) + 1)
-
-    plt.figure()
-    plt.plot(epochs, loss, label="Training loss")
-    plt.title("Training loss")
-    plt.xlabel("Epochs")
-    plt.ylabel("Loss")
-    plt.legend()
-    plt.show()
-
-    plt.figure()
-    plt.plot(epochs, acc, label="Training accuracy")
-    plt.title("Training accuracy")
-    plt.xlabel("Epochs")
-    plt.ylabel("Accuracy")
-    plt.legend()
-    plt.show()
-
-
-def plot_confusion_matrix(
-    true_labels: Sequence[int] | np.ndarray,
-    predicted_labels: Sequence[int] | np.ndarray,
-    normalize: bool = True,
-) -> None:
-    if normalize:
-        cm = confusion_matrix(true_labels, predicted_labels, normalize="true")
-    else:
-        cm = confusion_matrix(true_labels, predicted_labels)
-
-    disp = ConfusionMatrixDisplay(confusion_matrix=cm)
-    disp.plot()
-    plt.title("Confusion Matrix")
-    plt.show()
-
-    print(classification_report(true_labels, predicted_labels, target_names=["0", "1"]))
-
-
-def plot_roc_curve(
-    y_true: Sequence[int] | np.ndarray,
-    y_scores: Sequence[float] | np.ndarray,
-) -> None:
-    fpr, tpr, _ = roc_curve(y_true, y_scores)
-    auc_score = roc_auc_score(y_true, y_scores)
-
-    plt.figure()
-    plt.plot(fpr, tpr, label=f"AUC = {auc_score:.2f}")
-    plt.plot([0, 1], [0, 1], linestyle="--")
-    plt.xlabel("False Positive Rate")
-    plt.ylabel("True Positive Rate")
-    plt.title("ROC Curve")
-    plt.legend()
-    plt.show()
 
 
 def evaluate_classifier(

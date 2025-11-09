@@ -1,34 +1,24 @@
+from pathlib import Path
+from typing import Tuple
+import pandas as pd
 
-import scipy.io
-import numpy as np
 
+def load_feature_datasets(
+    train_path: str | Path,
+    test_path: str | Path,
+    label_col: str = "label",
+) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+  
+    train_path = Path(train_path)
+    test_path = Path(test_path)
 
-def load_eeg_mat(path, struct_name="training_set"):
-    """
-    Load a Matlab struct with fields:
-      - eeg_sequences: cell array/list of [T x C]
-      - label: vector of length N
+    df_train = pd.read_csv(train_path)
+    df_test = pd.read_csv(test_path)
 
-    Returns
-    -------
-    X : np.ndarray, shape (N, T, C)
-    y : np.ndarray, shape (N,)
-    """
-    mat = scipy.io.loadmat(path, squeeze_me=True)
-    data_struct = mat[struct_name]
+    y_train = df_train[label_col].copy()
+    y_test = df_test[label_col].copy()
 
-    eeg_seq = data_struct["eeg_sequences"]
-    labels  = data_struct["label"]
+    X_train = df_train.drop(columns=[label_col])
+    X_test = df_test.drop(columns=[label_col])
 
-    # Ensure we have a 1D list/array of sequences
-    eeg_seq = np.atleast_1d(eeg_seq)
-
-    X_list = []
-    for seq in eeg_seq:
-        arr = np.array(seq, dtype=np.float32)   # [T x C]
-        X_list.append(arr)
-
-    X = np.stack(X_list, axis=0)               # [N x T x C]
-    y = np.array(labels).astype(int).ravel()   # [N]
-
-    return X, y
+    return X_train, X_test, y_train, y_test
