@@ -2,7 +2,7 @@ import os
 import datetime as dt
 import collections
 from pathlib import Path
-from typing import Tuple
+from typing import Literal, Tuple
 
 import numpy as np
 import scipy.io
@@ -142,7 +142,9 @@ def evaluate_classifier(
 
 def majority_vote_over_imagery_sequence(
     y_pred_crops: np.ndarray,
+    y_pred_prob_crops: np.ndarray,
     factor: int = 3,
+    agg: Literal["mean", "max"] = "mean",
     ) -> np.ndarray:
 
     y_flat = y_pred_crops.flatten()
@@ -160,4 +162,33 @@ def majority_vote_over_imagery_sequence(
     print(f"Number of trial-level labels: {len(y_trial_pred)}")
 
     return y_trial_pred
+
+
+def aggregate_crops_to_trials_from_probs(
+    y_pred_prob_crops: np.ndarray,
+    factor: int = 3,
+    threshold: float = 0.5,
+    agg: str = "mean",  
+    ) -> Tuple[np.ndarray, np.ndarray]:
+
+    probs_flat = np.asarray(y_pred_prob_crops).ravel()
+    assert len(probs_flat) % factor == 0, "Number of crops must be a multiple of factor."
+
+    n_trials = len(probs_flat) // factor
+    probs_grouped = probs_flat.reshape(n_trials, factor)
+
+    if agg == "mean":
+        trial_probs = probs_grouped.mean(axis=1)
+    elif agg == "max":
+        trial_probs = probs_grouped.max(axis=1)
+    else:
+        raise ValueError(f"Unknown aggregation method: {agg!r}")
+
+    y_trial_pred = (trial_probs >= threshold).astype(int)
+
+    print(f"Number of crops: {len(probs_flat)}")
+    print(f"Number of trials: {n_trials}")
+
+    return y_trial_pred, trial_probs
+
 

@@ -66,7 +66,7 @@ def save_linear_results(
     plot_confusion_matrix(
         y_true,
         y_pred,
-        normalize=False,
+        normalize=True,
         class_labels=class_labels,
         save_path=cm_path,
         show=False,
