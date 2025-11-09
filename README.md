@@ -5,26 +5,54 @@
 
 ## 🎯 Project Goal
 
-The goal of this project is to **classify EEG signals recorded during motor imagery tasks** -that is, when a subject imagines moving a limb (e.g., left or right hand).  
+The goal of this project is to **classify EEG signals recorded during motor imagery tasks**, i.e. when a subject imagines moving a limb (left or right hand).
 By decoding these imagined movements from brain activity, we aim to support the development of **brain-computer interfaces (BCIs)** for motor rehabilitation, prosthetic control, and neurofeedback systems.
 
-Specifically, this project:
-- Uses **EEG recordings** from a motor imagery experiment inspired by  
+The pipeline combines:
+- Signal preprocessing in Matlab
+- Feature-based traditional **linear models** (LDA, Logistic Regression)
+- Sequence-based **deep learning** (ConvLSTM) for temporal-spatial EEG sequence learning
+to compare interpretability and performance across methods.
+
+This project uses **EEG recordings** from a motor imagery experiment inspired by  
   *Leeb et al.*, “Brain-Computer Communication: Motivation, Aim, and Impact of Exploring a Virtual Apartment,”  
   *IEEE Trans. Neural Systems and Rehabilitation Engineering, 2007*.
-- Implements a **complete processing pipeline**, from raw signal cleaning to feature extraction and classification.
-- Compares **traditional linear models** (LDA, Logistic Regression) with a **deep learning approach** (ConvLSTM) for temporal–spatial EEG sequence learning.
 
 ---
 
-## Overview
+## Repository Overview
 
-This repository integrates:
-- **Signal preprocessing in Matlab**, to clean, segment, and prepare EEG trials.
-- **Feature-based classification in Python**, using LDA and Logistic Regression for interpretable baselines.
-- **Sequence-based deep learning in Python**, using ConvLSTM to capture spatiotemporal dependencies in raw EEG signals.
+MOTOR_IMAGERY_EEG
+├── data/                     # Processed and raw datasets (.mat, .csv)
+│   ├── training_set.mat
+│   ├── test_set.mat
+│   ├── feature_training_set.csv
+│   └── feature_test_set.csv
+│
+├── notebooks/
+│   ├── linear_model_notebook.ipynb     # LDA and Logistic Regression models
+│   └── deep_learning_notebook.ipynb    # ConvLSTM-based sequence model
+│
+├── src/                      # Python package with reusable modules
+│   ├── data_processing.py
+│   ├── data_visualisation.py
+│   ├── deep_learning.py
+│   ├── model_selection.py
+│   └── utils.py
+│
+├── models/                   # Saved trained models (.h5, .npy)
+├── results/                  # Evaluation outputs (plots, reports)
+│   ├── LDA_confusion_matrix.png
+│   ├── LDA_roc_curve.png
+│   ├── LDA_classification_report.txt
+│   ├── ConvLSTM_confusion_matrix.png
+│   ├── ConvLSTM_roc_curve.png
+│   └── ConvLSTM_classification_report.txt
+│
+├── documentation/            # Project and reference notes
+├── matlab/                   # Preprocessing scripts
+└── README.md
 
-Together, these components form a reproducible framework for EEG motor imagery analysis, from signal-level processing to model evaluation.
 
 ---
 
@@ -52,40 +80,43 @@ All low-level signal processing steps are executed in Matlab scripts (`preproces
 
 ## 2. Classification - Linear Models (Python)
 
-Notebook: `EEG_Linear_model.ipynb`
+Notebook: `notebooks/linear_model_notebook.ipynb`
 
-**Input:** band-power features extracted from Matlab (`trainset_feat_new.csv`, `testset_feat_new.csv`)
+**Input:** band-power features extracted from Matlab (`feature_training_set.csv`, `feature_test_set.csv`)
 
 **Pipeline:**
 - Standardization using `StandardScaler`
 - Correlation-based feature selection
-- Sequential feature selection (`SFS`, `SBS`, `SFFS`, `SBFS`)
+- Sequential feature selection (`SFS` outperformed `SBS`, `SFFS`, `SBFS` methods)
 - Classification using:
   - Linear Discriminant Analysis (LDA)
   - Logistic Regression
 
-**Outputs:**
-- Selected feature list  
-- Cross-validated accuracy  
-- Confusion matrix and ROC curve  
+**Results:**
+| Model                                  | Accuracy |  ROC-AUC | Macro F1 |
+| :------------------------------------- | :------: | :------: | :------: |
+| **Linear Discriminant Analysis (LDA)** | **0.87** | **0.94** | **0.87** |
+| **Logistic Regression**                |   0.85   |   0.93   |   0.86   |
+
 
 
 ## 3. Classification - Deep Learning Models (Python)
 
-Notebook: `EEG_Deep_learning.ipynb` (under development)
+Notebook: `notebooks/deep_learning_notebook.ipynb`
 
 **Input:** preprocessed `.mat` files (`training_set.mat`, `test_set.mat`)  
-Each trial corresponds to 3 channels (C3, Cz, C4) and 3 s (≈ 750 samples).
+Each trial corresponds to 3 channels (C3, Cz, C4) and 3s (≈ 750 samples).
 
-#### 3.1 Data Augmentation  
+Steps:
+
+#### 3.1 Data Augmentation and video-like represntation
 Each 3 s segment is split into **three 1 s windows** (250 samples each).  
 Each 1 s window is further divided into:
 - **5 frames × 50 samples** → temporal representation for ConvLSTM.
 
 Resulting shape: (N, time_steps=5, rows=50, cols=3, channels=1)
 
-
-#### 3.2 Model Architecture – ConvLSTM
+#### 3.2 Model Architecture - ConvLSTM
 A compact spatiotemporal model using 2 ConvLSTM blocks:
 
 ```python
@@ -98,27 +129,48 @@ Dense(2, activation='softmax')
 #### 3.3 Training
 
 - **Optimizer:** `Adam (learning rate = 1e-3)`  
-- **Loss:** `SparseCategoricalCrossentropy`  
+- **Loss:** `binary_crossentropy`  
+
+#### 3.4 Evaluation and Results
+The model was evaluated on the 1s sequences and on the 3s moro imagery sequence (3s).
+
+| Metric   | Value    |
+| -------- | -------- |
+| Accuracy | **0.91** |
+| ROC-AUC  | **0.98** |
+| Macro F1 | **0.91** |
+
 
 ---
 
-## 4. Evaluation
+## 4. Results  Summary
 
-- Confusion Matrix  
-- ROC-AUC Score  
-- Accuracy on held-out test set
+| Model               | Input               | Accuracy | AUC      | F1 (macro) | Notes                                  |
+| ------------------- | ------------------- | -------- | -------- | ---------- | -------------------------------------- |
+| LDA                 | Band-power features | **0.87** | **0.94** | 0.87       | Baseline linear classifier             |
+| Logistic Regression | Band-power features | 0.85     | 0.93     | 0.86       | Simple linear model                    |
+| ConvLSTM            | Raw EEG sequences   | **0.91** | **0.98** | 0.91       | Captures temporal–spatial dependencies |
 
 
 ---
 
-## 📊 5. Results 
+## 5. Key Insights
 
-| Model | Input | Accuracy | AUC | Notes |
-|-------|--------|----------|-----|-------|
-| LDA | Band-power features | 0.87 | 0.94 | Fast baseline |
-| Logistic Regression | Band-power features | 0.85 | 0.93 | - |
-| ConvLSTM | Raw 3 × EEG sequences | 0.90| - | Temporal-spatial modeling |
+- Linear models (LDA, LR) achieve strong baseline accuracy on EEG-band-based features.
+- The ConvLSTM captures richer spatiotemporal information, improving both accuracy/ f1-score and AUC.
 
+---
+
+## 6. Next Steps
+
+- Integrate cross-subject validation
+- Explore frequency–temporal attention models
+
+---
+
+## Author & License
+
+Developed by Elisa Vasta
 
 
 
