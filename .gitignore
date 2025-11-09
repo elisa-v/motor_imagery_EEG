@@ -21,7 +21,7 @@ __pycache__/
 # ===========================
 # Ignore all data
 # ===========================
-data/raw/*
+!data/raw/*
 !data/test_set.mat
 !data/training_set.mat
 !data/feature_training_set.csv
