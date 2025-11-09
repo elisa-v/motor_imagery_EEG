@@ -46,4 +46,4 @@ def hyperp_search(
     else:
         plot_confusion_matrix(y_te, y_pred, class_labels=class_labels)
 
-    return best_model, test_accuracy
+    return best_model, test_accuracy, y_pred, y_pred_proba

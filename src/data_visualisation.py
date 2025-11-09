@@ -1,5 +1,6 @@
 
 from __future__ import annotations
+from pathlib import Path
 
 import keras
 from matplotlib import pyplot as plt
@@ -24,7 +25,11 @@ def plot_confusion_matrix(
     predicted_labels: Sequence[int] | np.ndarray,
     normalize: bool = True,
     class_labels: Sequence[str] | None = None,
-) -> None:
+    save_path: str | Path | None = None,
+    show: bool = True,
+    print_report: bool = True,
+    ) -> None:
+
     if normalize:
         cm = confusion_matrix(true_labels, predicted_labels, normalize="true")
     else:
@@ -33,17 +38,32 @@ def plot_confusion_matrix(
     disp = ConfusionMatrixDisplay(confusion_matrix=cm)
     disp.plot()
     plt.title("Confusion Matrix")
-    plt.show()
 
     if class_labels is None:
         class_labels = ["0", "1"]
-    print(classification_report(true_labels, predicted_labels, target_names=["0", "1"]))
+
+    if save_path is not None:
+        save_path = Path(save_path)
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(save_path, dpi=300, bbox_inches="tight")
+
+    if show:
+        plt.show()
+    else:
+        plt.close()
+
+    if print_report:
+        report = classification_report(true_labels, predicted_labels,
+                                       target_names=class_labels)
+        print(report)
 
 
 def plot_roc_curve(
     y_true: Sequence[int] | np.ndarray,
     y_score: Sequence[float] | np.ndarray,
     label: str = "ROC",
+    save_path: str | Path | None = None,
+    show: bool = True,
 ) -> None:
     
     fpr, tpr, _ = roc_curve(y_true, y_score)
@@ -58,7 +78,16 @@ def plot_roc_curve(
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.show()
+
+    if save_path is not None:
+        save_path = Path(save_path)
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(save_path, dpi=300, bbox_inches="tight")
+
+    if show:
+        plt.show()
+    else:
+        plt.close()
 
 
 def plot_class_distribution(

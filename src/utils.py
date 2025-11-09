@@ -1,8 +1,11 @@
 from pathlib import Path
-from typing import Tuple
+from typing import Sequence, Tuple
 import numpy as np
 import pandas as pd
 import scipy
+from sklearn.metrics import classification_report
+
+from src.data_visualisation import plot_confusion_matrix, plot_roc_curve
 
 
 def load_feature_datasets(
@@ -45,3 +48,51 @@ def load_eeg_mat_dataset(mat_path: str | Path,
     print("  y shape:", y.shape)
 
     return x, y
+
+
+def save_linear_results(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    y_pred_proba: np.ndarray | None,
+    results_dir: Path,
+    model_name: str,
+    class_labels: Sequence[str],
+    ) -> None:
+ 
+    results_dir.mkdir(parents=True, exist_ok=True)
+
+    # Confusion matrix (PNG) 
+    cm_path = results_dir / f"{model_name}_confusion_matrix.png"
+    plot_confusion_matrix(
+        y_true,
+        y_pred,
+        normalize=False,
+        class_labels=class_labels,
+        save_path=cm_path,
+        show=False,
+        print_report=False,
+    )
+
+    # ROC curve, if probs available 
+    if y_pred_proba is not None:
+        roc_path = results_dir / f"{model_name}_roc_curve.png"
+        plot_roc_curve(
+            y_true,
+            y_pred_proba,
+            label=model_name,
+            save_path=roc_path,
+            show=False,
+        )
+    else:
+        roc_path = None
+
+    # Classification report (TXT) 
+    report = classification_report(y_true, y_pred, target_names=class_labels)
+    report_path = results_dir / f"{model_name}_classification_report.txt"
+    report_path.write_text(report)
+
+    print(f"Results saved to {results_dir}")
+    print(f" - Confusion matrix: {cm_path.name}")
+    if roc_path is not None:
+        print(f" - ROC curve: {roc_path.name}")
+    print(f" - Classification report: {report_path.name}")
