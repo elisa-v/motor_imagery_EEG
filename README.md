@@ -1,5 +1,6 @@
 # EEG Motor Imagery Classification  
 **Hybrid pipeline combining Matlab preprocessing and Python-based machine learning**
+(project carried out in 2022 - still under development)
 
 ---
 
